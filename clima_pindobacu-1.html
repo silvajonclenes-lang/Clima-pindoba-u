@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#0b1738">
+<title>Clima Pindobaçu | Previsão do Tempo</title>
+<style>
+:root{color-scheme:dark;--bg:#08132f;--panel:rgba(255,255,255,.09);--line:rgba(255,255,255,.14);--muted:#b9c8e7;--white:#f6f9ff;--blue:#7dd3fc}
+*{box-sizing:border-box}body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;color:var(--white);background:radial-gradient(ellipse at 15% 0%,#234b85 0,transparent 42%),radial-gradient(ellipse at 95% 30%,#1b5271 0,transparent 35%),linear-gradient(155deg,#08132f,#10234c 65%,#08132f);min-height:100vh}
+.wrap{width:min(100% - 28px,980px);margin:auto;padding:24px 0 34px}.top{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:22px}.brand{display:flex;align-items:center;gap:11px}.logo{width:46px;height:46px;display:grid;place-items:center;border-radius:15px;background:linear-gradient(135deg,#fbbf24,#fb923c);font-size:25px;box-shadow:0 8px 28px #f59e0b33}.brand h1{font-size:18px;margin:0;letter-spacing:.2px}.brand p{margin:3px 0 0;color:var(--muted);font-size:12px}.live{border:1px solid var(--line);border-radius:999px;padding:8px 11px;font-size:12px;color:#c7f9d4;white-space:nowrap}.live:before{content:"";display:inline-block;width:7px;height:7px;border-radius:50%;background:#4ade80;margin-right:7px}
+.hero{border:1px solid var(--line);border-radius:28px;padding:clamp(22px,5vw,42px);background:linear-gradient(120deg,rgba(255,255,255,.13),rgba(255,255,255,.045));box-shadow:0 22px 70px #0002;position:relative;overflow:hidden}.hero:after{content:"";position:absolute;width:240px;height:240px;border-radius:50%;background:#60a5fa12;right:-80px;top:-80px;pointer-events:none}.location{color:var(--muted);font-size:14px}.location strong{color:white;font-size:19px;display:block;margin-top:3px}.current{display:grid;grid-template-columns:1fr auto;align-items:center;gap:12px;margin-top:18px}.temp{font-size:clamp(64px,14vw,104px);font-weight:750;letter-spacing:-5px;line-height:1}.temp sup{font-size:.34em;vertical-align:top;letter-spacing:0;margin-left:4px}.condition{font-size:18px;margin-top:10px}.details{font-size:13px;color:var(--muted);margin-top:7px}.weather-icon{font-size:clamp(76px,17vw,125px);filter:drop-shadow(0 10px 18px #0002);padding-right:8px}.updated{font-size:11px;color:#a9bbdd;margin-top:22px}
+.section-head{display:flex;justify-content:space-between;align-items:end;gap:10px;margin:27px 2px 13px}.section-head h2{font-size:17px;margin:0}.section-head span{font-size:12px;color:var(--muted)}.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.stat,.day{border:1px solid var(--line);background:var(--panel);border-radius:19px;padding:17px}.stat-label{font-size:12px;color:var(--muted);display:flex;align-items:center;gap:7px}.stat-value{font-size:23px;font-weight:700;margin-top:10px}.stat-sub{font-size:11px;color:var(--muted);margin-top:3px}.forecast{display:grid;grid-template-columns:repeat(5,1fr);gap:10px}.day{text-align:center;padding:16px 8px}.day-name{font-size:12px;color:var(--muted)}.day-icon{font-size:29px;margin:12px 0}.day-temp{font-weight:700;font-size:14px}.day-rain{font-size:11px;color:var(--blue);margin-top:7px}.footer{text-align:center;color:#a9bbdd;font-size:11px;line-height:1.6;margin-top:26px}.error{display:none;margin-top:14px;border-radius:12px;padding:12px;background:#7f1d1d55;color:#fecaca;font-size:13px}.loading{color:var(--muted)}button{font:inherit}
+@media(max-width:600px){.wrap{width:min(100% - 20px,980px);padding-top:16px}.top{align-items:flex-start}.brand h1{font-size:16px}.live{font-size:10px;padding:7px 8px}.hero{border-radius:23px}.stats{gap:8px}.stat{padding:13px 10px;border-radius:15px}.stat-value{font-size:20px}.stat-label{font-size:11px;gap:4px}.stat-sub{font-size:10px}.forecast{grid-template-columns:repeat(5,minmax(0,1fr));gap:6px}.day{padding:13px 3px;border-radius:14px}.day-icon{font-size:24px}.day-name{font-size:10px}.day-temp{font-size:12px}.day-rain{font-size:10px}}
+@media(max-width:370px){.stats{grid-template-columns:1fr}.stat{display:flex;align-items:center;justify-content:space-between}.stat-value{margin:0}.stat-sub{display:none}.forecast{grid-template-columns:repeat(3,1fr)}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <div class="brand"><div class="logo">☀️</div><div><h1>Clima Pindobaçu</h1><p>O tempo da nossa cidade, em tempo real</p></div></div>
+    <div class="live">Dados ao vivo</div>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="location">📍 Bahia, Brasil <strong>Pindobaçu</strong></div>
+      <div id="loading" class="loading" style="margin-top:25px">Buscando as condições do tempo…</div>
+      <div id="weather" style="display:none">
+        <div class="current">
+          <div><div class="temp"><span id="temp">--</span><sup>°C</sup></div><div class="condition" id="condition">Carregando…</div><div class="details">Sensação térmica de <b id="feels">--°</b> · Máx. <b id="max">--°</b> / Mín. <b id="min">--°</b></div></div>
+          <div class="weather-icon" id="icon">🌤️</div>
+        </div>
+        <div class="updated" id="updated">Atualizando informações…</div>
+      </div>
+      <div class="error" id="error">Não foi possível carregar a previsão agora. Se você abriu este arquivo pela visualização de downloads, tente abrir no Chrome ou publicar o site na internet. <button id="retry" style="margin:10px 0 0;padding:9px 13px;border:1px solid #fecaca;border-radius:9px;background:#7f1d1d;color:white" onclick="loadWeather()">Tentar novamente</button><div id="errorDetail" style="margin-top:7px;font-size:11px"></div></div>
+    </section>
+
+    <div class="section-head"><h2>Condições atuais</h2><span>Agora em Pindobaçu</span></div>
+    <section class="stats">
+      <div class="stat"><div><div class="stat-label">💧 Umidade do ar</div><div class="stat-sub">Quantidade de vapor no ar</div></div><div class="stat-value" id="humidity">--%</div></div>
+      <div class="stat"><div><div class="stat-label">💨 Vento</div><div class="stat-sub">Velocidade atual</div></div><div class="stat-value" id="wind">-- <small style="font-size:12px">km/h</small></div></div>
+      <div class="stat"><div><div class="stat-label">🌧️ Chance de chuva</div><div class="stat-sub">Previsão para hoje</div></div><div class="stat-value" id="rain">--%</div></div>
+    </section>
+
+    <div class="section-head"><h2>Próximos 5 dias</h2><span>Previsão diária</span></div>
+    <section class="forecast" id="forecast">
+      <div class="day"><div class="day-name">Carregando</div><div class="day-icon">⏳</div><div class="day-temp">--° / --°</div></div>
+    </section>
+  </main>
+  <footer class="footer">Previsão fornecida pela Open-Meteo. Os dados são estimativas meteorológicas e podem mudar.<br>Feito para Pindobaçu, Bahia 💙</footer>
+</div>
+<script>
+const lat=-10.741, lon=-40.360;
+const $=id=>document.getElementById(id);
+const weatherCodes={
+  0:["Céu limpo","☀️"],1:["Predominantemente limpo","🌤️"],2:["Parcialmente nublado","⛅"],3:["Nublado","☁️"],
+  45:["Nevoeiro","🌫️"],48:["Nevoeiro com geada","🌫️"],51:["Garoa leve","🌦️"],53:["Garoa moderada","🌦️"],55:["Garoa intensa","🌧️"],
+  56:["Garoa congelante leve","🌧️"],57:["Garoa congelante intensa","🌧️"],61:["Chuva fraca","🌦️"],63:["Chuva moderada","🌧️"],65:["Chuva forte","🌧️"],
+  66:["Chuva congelante leve","🌧️"],67:["Chuva congelante forte","🌧️"],71:["Neve fraca","🌨️"],73:["Neve moderada","🌨️"],75:["Neve forte","❄️"],
+  77:["Grãos de neve","🌨️"],80:["Pancadas fracas","🌦️"],81:["Pancadas moderadas","🌧️"],82:["Pancadas fortes","⛈️"],85:["Pancadas de neve","🌨️"],86:["Pancadas de neve fortes","🌨️"],
+  95:["Trovoadas","⛈️"],96:["Trovoadas com granizo leve","⛈️"],99:["Trovoadas com granizo forte","⛈️"]
+};
+function dayName(date,i){if(i===0)return "Hoje";if(i===1)return "Amanhã";return new Date(date+"T12:00:00").toLocaleDateString("pt-BR",{weekday:"short"}).replace(".","").replace(/^./,c=>c.toUpperCase())}
+function dateTime(s){return new Date(s).toLocaleString("pt-BR",{day:"2-digit",month:"2-digit",hour:"2-digit",minute:"2-digit"})}
+async function loadWeather(){
+ try{
+  const url=`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,relative_humidity_2m,apparent_temperature,is_day,precipitation,weather_code,wind_speed_10m&hourly=precipitation_probability&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max&timezone=America%2FSao_Paulo&forecast_days=5`;
+  const r=await fetch(url);if(!r.ok)throw new Error("A API respondeu com status "+r.status);const d=await r.json();if(d.error)throw new Error(d.reason||"A API retornou um erro");const c=d.current, daily=d.daily;
+  const [desc,ico]=weatherCodes[c.weather_code]||["Condição variável","🌤️"];
+  $("loading").style.display="none";$("weather").style.display="block";
+  $("temp").textContent=Math.round(c.temperature_2m);$("condition").textContent=desc;$("icon").textContent=ico;
+  $("feels").textContent=Math.round(c.apparent_temperature)+"°C";$("max").textContent=Math.round(daily.temperature_2m_max[0])+"°C";$("min").textContent=Math.round(daily.temperature_2m_min[0])+"°C";
+  $("humidity").textContent=c.relative_humidity_2m+"%";$("wind").innerHTML=Math.round(c.wind_speed_10m)+' <small style="font-size:12px">km/h</small>';$("rain").textContent=(daily.precipitation_probability_max[0]??0)+"%";
+  $("updated").textContent="Atualizado em "+dateTime(c.time)+" · Horário de Brasília";
+  $("forecast").innerHTML=daily.time.map((date,i)=>{const [txt,icon]=weatherCodes[daily.weather_code[i]]||["Variável","🌤️"];return `<div class="day"><div class="day-name">${dayName(date,i)}</div><div class="day-icon" aria-label="${txt}">${icon}</div><div class="day-temp">${Math.round(daily.temperature_2m_max[i])}° <span style="color:#b9c8e7;font-weight:400">${Math.round(daily.temperature_2m_min[i])}°</span></div><div class="day-rain">💧 ${daily.precipitation_probability_max[i]??0}%</div></div>`}).join("");
+ }catch(e){$("loading").textContent="Previsão indisponível no momento.";$("error").style.display="block";$("errorDetail").textContent="Detalhe técnico: "+(e&&e.message?e.message:"falha de conexão");}
+}
+loadWeather();setInterval(loadWeather,15*60*1000);
+</script>
+</body>
+</html>
